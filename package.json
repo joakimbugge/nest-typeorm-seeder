@@ -1,0 +1,109 @@
+{
+  "name": "@airhead/nest-typeorm-seeder",
+  "version": "0.0.0-dev",
+  "description": "",
+  "license": "MIT",
+  "author": {
+    "name": "Joakim Bugge",
+    "email": "joakim.bugge@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joakimbugge/nest-typeorm-seeder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joakimbugge/nest-typeorm-seeder/issues",
+    "email": "joakim.bugge@gmail.com"
+  },
+  "keywords": [
+    "nest",
+    "typeorm",
+    "seeder"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "start:standalone": "nest start --config nest-cli.standalone.json --path tsconfig.json",
+    "start:standalone:dev": "nest start --config nest-cli.standalone.json --path tsconfig.json --watch",
+    "start:standalone:debug": "nest start --config nest-cli.standalone.json --path tsconfig.json --debug --watch",
+    "start:module": "nest start --config nest-cli.module.json --path tsconfig.json",
+    "start:module:dev": "nest start --config nest-cli.module.json --path tsconfig.json --watch --preserveWatchOutput",
+    "start:module:debug": "nest start --config nest-cli.module.json --path tsconfig.json --debug --watch",
+    "lint": "eslint .",
+    "lint:types": "tsc --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "prettify": "prettier --write src",
+    "prepare": "is-ci || husky install"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "8.x.x",
+    "@nestjs/core": "8.x.x",
+    "@nestjs/typeorm": "8.x.x"
+  },
+  "dependencies": {
+    "@airhead/typeorm-seeder": "^1.1.1",
+    "lodash": "^4.17.21",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^2.3.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.1.0",
+    "@commitlint/config-conventional": "^16.0.0",
+    "@nestjs/cli": "^8.0.0",
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0",
+    "@nestjs/platform-express": "^8.2.6",
+    "@nestjs/schematics": "^8.0.0",
+    "@nestjs/testing": "^8.0.0",
+    "@nestjs/typeorm": "^8.0.3",
+    "@ngneat/falso": "^2.20.0",
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@tsconfig/node14": "^1.0.1",
+    "@types/jest": "27.0.2",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^16.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "commitlint": "^16.1.0",
+    "conventional-changelog-conventionalcommits": "^4.6.3",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "is-ci": "^3.0.1",
+    "jest": "^27.2.5",
+    "lint-staged": "^12.3.2",
+    "prettier": "^2.3.2",
+    "rollup": "^2.66.1",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^4.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "semantic-release": "^19.0.2",
+    "source-map-support": "^0.5.20",
+    "better-sqlite3": "^7.5.0",
+    "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "tsconfig-paths": "^3.10.1",
+    "typeorm": "^0.2.41",
+    "typescript": "^4.3.5"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "tsc --noEmit",
+      "eslint",
+      "prettier --write"
+    ],
+    "src/**/*.json": [
+      "prettier --write"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
