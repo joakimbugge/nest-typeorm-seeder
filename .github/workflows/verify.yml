@@ -1,0 +1,54 @@
+name: Verify
+on:
+  push:
+    branches-ignore:
+      - main
+      - next
+      - beta
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run type checker
+        run: npm run lint:types
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Run tests
+        run: npm run test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Run build
+        run: npm run build
