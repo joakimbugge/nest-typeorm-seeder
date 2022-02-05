@@ -1,15 +1,19 @@
-<br>
-<br>
+<br />
+<br />
 
-<h1 align='center'>
-    @airhead/nest-typeorm-seeder
-</h1>
+<div align='center'>
+    <img src='https://github.com/joakimbugge/nest-typeorm-seeder/raw/main/assets/logo.png' alt='Logo' />
+    <br /><br /><br />
+    <a href='https://www.npmjs.com/package/@airhead/nest-typeorm-seeder'>
+        <img src='https://img.shields.io/github/v/release/joakimbugge/nest-typeorm-seeder?include_prereleases' alt='Latest release' />
+    </a>
+    <a href='https://github.com/joakimbugge/nest-typeorm-seeder/blob/main/LICENSE'>
+        <img src='https://img.shields.io/github/license/joakimbugge/nest-typeorm-seeder' alt='License' />
+    </a>
+    <img src="https://img.shields.io/librariesio/release/npm/@airhead/nest-typeorm-seeder" alt='Dependencies'>
+</div>
 
-<p align='center'>
-<img src='https://img.shields.io/github/v/release/joakimbugge/nest-typeorm-seeder?include_prereleases' alt='Latest release' />
-<img src='https://img.shields.io/github/license/joakimbugge/nest-typeorm-seeder' alt='License' />
-<img src='https://img.shields.io/github/workflow/status/joakimbugge/nest-typeorm-seeder/Verify' alt='Build status' />
-</p>
+<br />
 
 <p align='center'>Seed your <a href='https://nestjs.com/'>Nest</a> with <a href='https://github.com/typeorm/typeorm'>TypeORM</a> application decoratively</p>
 
@@ -68,3 +72,7 @@ TypeOrmSeeder.run({
   seeders: [UserSeeder, PostSeeder, CategorySeeder],
 });
 ```
+
+---
+
+<a href="https://www.flaticon.com/free-icons/grow" title="grow icons">Grow icons created by Freepik - Flaticon</a>
