@@ -61,6 +61,30 @@ describe(TypeOrmSeederModule.name, () => {
 
     expect(forSeedersSpy.mock.calls[1][0]).toEqual([PostSeederMock]);
   });
+
+  it('forces migrations with once = false', async () => {
+    const forSeedersSpy = jest.spyOn(typeormSeeder, 'forSeeders');
+    const databasePath = `./test/databases/${crypto.randomUUID()}.sqlite`;
+    const options: NestTestingModuleOptions = {
+      module: {
+        once: false,
+      },
+      connection: {
+        database: databasePath,
+        dropSchema: false,
+      },
+    };
+
+    const firstModuleRef = await createTestingModule([UserSeederMock], options);
+    await firstModuleRef.close();
+
+    const secondModuleRef = await createTestingModule([UserSeederMock, PostSeederMock], options);
+    await secondModuleRef.close();
+
+    await fs.rmSync(databasePath, { recursive: true, force: true });
+
+    expect(forSeedersSpy.mock.calls[1][0]).toEqual([UserSeederMock, PostSeederMock]);
+  });
 });
 
 async function createTestingModule(

@@ -3,11 +3,12 @@ import { DynamicModule } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BetterSqlite3ConnectionOptions } from 'typeorm/driver/better-sqlite3/BetterSqlite3ConnectionOptions';
-import { TypeOrmSeederModule } from '../../src';
+import { TypeOrmSeederModule, TypeOrmSeederModuleOptions } from '../../src';
 import { getInMemoryDatabaseOptions } from './database';
 
 export interface NestTestingModuleOptions {
-  connection: Partial<BetterSqlite3ConnectionOptions>;
+  module?: Partial<TypeOrmSeederModuleOptions>;
+  connection?: Partial<BetterSqlite3ConnectionOptions>;
 }
 
 export function createNestTestingModule(
@@ -18,7 +19,7 @@ export function createNestTestingModule(
   return Test.createTestingModule({
     imports: [
       createTypeOrmTestingModule(entities, options?.connection),
-      TypeOrmSeederModule.forRoot({ seeders }),
+      TypeOrmSeederModule.forRoot({ ...options?.module, seeders }),
     ],
   }).compile();
 }
