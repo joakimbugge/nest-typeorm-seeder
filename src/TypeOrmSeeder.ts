@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { merge } from 'lodash';
 import { TypeOrmSeederModule, TypeOrmSeederModuleOptions } from './TypeOrmSeederModule';
 
-export interface ApplicationOptions extends ModuleMetadata {
+export interface TypeOrmSeederOptions extends ModuleMetadata {
   seeders: TypeOrmSeederModuleOptions['seeders'];
   close?: boolean;
   connectionName?: TypeOrmSeederModuleOptions['connectionName'];
@@ -12,8 +12,8 @@ export interface ApplicationOptions extends ModuleMetadata {
 }
 
 export class TypeOrmSeeder {
-  public static async run(options: ApplicationOptions): Promise<INestApplicationContext> {
-    const opts = merge<ApplicationOptions, ApplicationOptions>(
+  public static async run(options: TypeOrmSeederOptions): Promise<INestApplicationContext> {
+    const opts = merge<TypeOrmSeederOptions, TypeOrmSeederOptions>(
       { seeders: [], close: true },
       options,
     );
