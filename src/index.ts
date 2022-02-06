@@ -1,3 +1,3 @@
 export * from '@airhead/typeorm-seeder';
-export { TypeOrmSeederModule } from './TypeOrmSeederModule';
-export { TypeOrmSeeder } from './TypeOrmSeeder';
+export { TypeOrmSeederModule, TypeOrmSeederModuleOptions } from './TypeOrmSeederModule';
+export { TypeOrmSeeder, ApplicationOptions } from './TypeOrmSeeder';

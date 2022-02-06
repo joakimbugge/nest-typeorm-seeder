@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { merge } from 'lodash';
 import { TypeOrmSeederModule, TypeOrmSeederModuleOptions } from './TypeOrmSeederModule';
 
-interface ApplicationOptions extends ModuleMetadata {
+export interface ApplicationOptions extends ModuleMetadata {
   seeders: TypeOrmSeederModuleOptions['seeders'];
   close?: boolean;
   connectionName?: TypeOrmSeederModuleOptions['connectionName'];
