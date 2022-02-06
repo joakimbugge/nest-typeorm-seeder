@@ -3,6 +3,7 @@ import {
   DynamicModule,
   Inject,
   Logger,
+  LoggerService,
   Module,
   ModuleMetadata,
   OnModuleInit,
@@ -17,6 +18,7 @@ export interface TypeOrmSeederModuleOptions extends ModuleMetadata {
   seeders: SeederConstructor[];
   once?: boolean;
   migrator?: MigratorOptions;
+  logger?: LoggerService | false;
   connectionName?: string;
 }
 
@@ -24,7 +26,6 @@ const SEEDER_OPTIONS = 'SEEDERS_OPTIONS';
 
 @Module({})
 export class TypeOrmSeederModule implements OnModuleInit {
-  private readonly logger = new Logger(TypeOrmSeederModule.name, { timestamp: true });
   private readonly connection: Connection;
   private readonly migrator: Migrator;
 
@@ -38,7 +39,12 @@ export class TypeOrmSeederModule implements OnModuleInit {
 
   public static forRoot(options: TypeOrmSeederModuleOptions): DynamicModule {
     const opts = merge<TypeOrmSeederModuleOptions, TypeOrmSeederModuleOptions>(
-      { seeders: [], once: true, connectionName: 'default' },
+      {
+        seeders: [],
+        once: true,
+        connectionName: 'default',
+        logger: new Logger(TypeOrmSeederModule.name, { timestamp: true }),
+      },
       options,
     );
 
@@ -64,7 +70,7 @@ export class TypeOrmSeederModule implements OnModuleInit {
     const resolver = this.getProvider.bind(this);
 
     if (seeders.length === 0) {
-      this.logger.log('No seeding necessary');
+      this.log('No seeding necessary');
       return;
     }
 
@@ -72,11 +78,11 @@ export class TypeOrmSeederModule implements OnModuleInit {
       resolver,
       onEachComplete: async (Seeder) => {
         await this.migrator.upsert(Seeder);
-        this.logger.log(`${Seeder.name} completed`);
+        this.log(`${Seeder.name} completed`);
       },
     });
 
-    this.logger.log('Seeding completed');
+    this.log('Seeding completed');
 
     await this.migrator.stop();
   }
@@ -93,5 +99,13 @@ export class TypeOrmSeederModule implements OnModuleInit {
     }
 
     return this.migrator.filter(seeders);
+  }
+
+  private log(message: string): void {
+    if (!this.options.logger) {
+      return;
+    }
+
+    this.options.logger.log(message);
   }
 }

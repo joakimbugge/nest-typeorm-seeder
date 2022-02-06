@@ -15,6 +15,7 @@ describe(TypeOrmSeeder.name, () => {
     await TypeOrmSeeder.run({
       imports: [createTypeOrmTestingModule([])],
       seeders: [UserSeederMock],
+      logger: false,
     });
 
     expect(forSeedersSpy).toHaveBeenCalledTimes(1);
@@ -27,6 +28,7 @@ describe(TypeOrmSeeder.name, () => {
     await TypeOrmSeeder.run({
       imports: [createTypeOrmTestingModule([])],
       seeders,
+      logger: false,
     });
 
     expect(forSeedersSpy.mock.calls[0][0]).toEqual(seeders);

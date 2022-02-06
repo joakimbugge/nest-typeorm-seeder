@@ -1,15 +1,14 @@
-import { SeederConstructor } from '@airhead/typeorm-seeder';
 import { INestApplicationContext, ModuleMetadata } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { merge } from 'lodash';
-import { MigratorOptions } from './Migrator';
-import { TypeOrmSeederModule } from './TypeOrmSeederModule';
+import { TypeOrmSeederModule, TypeOrmSeederModuleOptions } from './TypeOrmSeederModule';
 
 interface ApplicationOptions extends ModuleMetadata {
-  seeders: SeederConstructor[];
+  seeders: TypeOrmSeederModuleOptions['seeders'];
   close?: boolean;
-  connectionName?: string;
-  migrator?: MigratorOptions;
+  connectionName?: TypeOrmSeederModuleOptions['connectionName'];
+  migrator?: TypeOrmSeederModuleOptions['migrator'];
+  logger?: TypeOrmSeederModuleOptions['logger'];
 }
 
 export class TypeOrmSeeder {
@@ -20,7 +19,7 @@ export class TypeOrmSeeder {
     );
 
     const mod = TypeOrmSeederModule.forRoot(opts);
-    const app = await NestFactory.createApplicationContext(mod);
+    const app = await NestFactory.createApplicationContext(mod, { logger: opts.logger });
 
     if (opts.close) {
       await app.close();
