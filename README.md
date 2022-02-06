@@ -13,7 +13,9 @@
     <a href='https://github.com/joakimbugge/nest-typeorm-seeder/blob/main/LICENSE'>
         <img src='https://img.shields.io/github/license/joakimbugge/nest-typeorm-seeder' alt='License' />
     </a>
-    <img src="https://img.shields.io/librariesio/release/npm/@airhead/nest-typeorm-seeder" alt='Dependencies'>
+    <a href='https://www.npmjs.com/package/@airhead/nest-typeorm-seeder?activeTab=dependencies'>
+        <img src="https://img.shields.io/librariesio/release/npm/@airhead/nest-typeorm-seeder" alt='Dependencies'>
+    </a>
 </div>
 
 <br />
