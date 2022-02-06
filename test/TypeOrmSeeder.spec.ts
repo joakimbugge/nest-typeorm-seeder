@@ -1,4 +1,7 @@
 import * as typeormSeeder from '@airhead/typeorm-seeder';
+import crypto from 'crypto';
+import * as fs from 'fs';
+import { BetterSqlite3ConnectionOptions } from 'typeorm/driver/better-sqlite3/BetterSqlite3ConnectionOptions';
 import { TypeOrmSeeder } from '../src';
 import { PostSeederMock } from './seeders/PostSeederMock';
 import { UserSeederMock } from './seeders/UserSeedMock';
@@ -32,5 +35,30 @@ describe(TypeOrmSeeder.name, () => {
     });
 
     expect(forSeedersSpy.mock.calls[0][0]).toEqual(seeders);
+  });
+
+  it('filter migrated seeders', async () => {
+    const forSeedersSpy = jest.spyOn(typeormSeeder, 'forSeeders');
+    const databasePath = `./test/databases/${crypto.randomUUID()}.sqlite`;
+    const databaseOptions: Partial<BetterSqlite3ConnectionOptions> = {
+      database: databasePath,
+      dropSchema: false,
+    };
+
+    await TypeOrmSeeder.run({
+      imports: [createTypeOrmTestingModule([], databaseOptions)],
+      seeders: [UserSeederMock],
+      logger: false,
+    });
+
+    await TypeOrmSeeder.run({
+      imports: [createTypeOrmTestingModule([], databaseOptions)],
+      seeders: [UserSeederMock, PostSeederMock],
+      logger: false,
+    });
+
+    await fs.rmSync(databasePath, { recursive: true, force: true });
+
+    expect(forSeedersSpy.mock.calls[1][0]).toEqual([PostSeederMock]);
   });
 });
