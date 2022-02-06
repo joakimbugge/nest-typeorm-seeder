@@ -13,7 +13,7 @@ import { merge } from 'lodash';
 import { Connection, getConnectionManager } from 'typeorm';
 import { Migrator, MigratorOptions } from './Migrator';
 
-interface ModuleOptions extends ModuleMetadata {
+export interface TypeOrmSeederModuleOptions extends ModuleMetadata {
   seeders: SeederConstructor[];
   once?: boolean;
   migrator?: MigratorOptions;
@@ -29,15 +29,15 @@ export class TypeOrmSeederModule implements OnModuleInit {
   private readonly migrator: Migrator;
 
   constructor(
-    @Inject(SEEDER_OPTIONS) private readonly options: Required<ModuleOptions>,
+    @Inject(SEEDER_OPTIONS) private readonly options: Required<TypeOrmSeederModuleOptions>,
     private readonly moduleRef: ModuleRef,
   ) {
     this.connection = getConnectionManager().get(options.connectionName);
     this.migrator = new Migrator(this.connection, this.options.migrator);
   }
 
-  public static forRoot(options: ModuleOptions): DynamicModule {
-    const opts = merge<ModuleOptions, ModuleOptions>(
+  public static forRoot(options: TypeOrmSeederModuleOptions): DynamicModule {
+    const opts = merge<TypeOrmSeederModuleOptions, TypeOrmSeederModuleOptions>(
       { seeders: [], once: true, connectionName: 'default' },
       options,
     );
@@ -70,9 +70,9 @@ export class TypeOrmSeederModule implements OnModuleInit {
 
     await forSeeders(seeders).run({
       resolver,
-      onEachComplete: async (seeder) => {
-        await this.migrator.upsert(seeder);
-        this.logger.log(`${seeder.name} completed`);
+      onEachComplete: async (Seeder) => {
+        await this.migrator.upsert(Seeder);
+        this.logger.log(`${Seeder.name} completed`);
       },
     });
 

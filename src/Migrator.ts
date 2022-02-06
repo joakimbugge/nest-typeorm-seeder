@@ -14,7 +14,7 @@ export interface MigratorOptions {
   tableName?: string;
 }
 
-interface TableColumns {
+export interface MigratorTableColumn {
   id: number;
   seeder: string;
   updated: number;
@@ -28,7 +28,7 @@ export class Migrator {
     this.queryRunner = this.connection.createQueryRunner();
 
     this.options = merge<Required<MigratorOptions>, MigratorOptions>(
-      { tableName: 'nest-typeorm-seeder' },
+      { tableName: 'nest_typeorm_seeder' },
       options || {},
     );
   }
@@ -46,17 +46,17 @@ export class Migrator {
     await this.queryRunner.release();
   }
 
-  public async upsert(seeder: SeederConstructor): Promise<InsertResult | UpdateResult> {
-    if (await this.get(seeder)) {
+  public async upsert(Seeder: SeederConstructor): Promise<InsertResult | UpdateResult> {
+    if (await this.get(Seeder)) {
       return this.connection
         .createQueryBuilder()
         .update(this.options.tableName)
-        .set({ seeder: seeder.name, updated: new Date() })
-        .where('seeder = :name', { name: seeder.name })
+        .set(getTableColumnForSeeder(Seeder))
+        .where('seeder = :name', { name: Seeder.name })
         .execute();
     }
 
-    return this.insert(seeder);
+    return this.insert(Seeder);
   }
 
   public async filter(seeders: SeederConstructor[]): Promise<SeederConstructor[]> {
@@ -66,31 +66,35 @@ export class Migrator {
     return seeders.filter((seeder) => !migratedSeederNames.includes(seeder.name));
   }
 
-  private insert(seeder: SeederConstructor): Promise<InsertResult> {
+  private insert(Seeder: SeederConstructor): Promise<InsertResult> {
     return this.connection
       .createQueryBuilder()
       .insert()
       .into(this.options.tableName)
-      .values([{ seeder: seeder.name, updated: new Date() }])
+      .values([getTableColumnForSeeder(Seeder)])
       .execute();
   }
 
-  private async get(seeder: SeederConstructor): Promise<TableColumns | undefined> {
+  private async get(Seeder: SeederConstructor): Promise<MigratorTableColumn | undefined> {
     return this.connection
       .createQueryBuilder()
       .select('*')
       .from(this.options.tableName, 'migrations')
-      .where('migrations.seeder = :name', { name: seeder.name })
+      .where('migrations.seeder = :name', { name: Seeder.name })
       .getRawOne();
   }
 
-  private getAll(): Promise<TableColumns[]> {
+  private getAll(): Promise<MigratorTableColumn[]> {
     return this.connection
       .createQueryBuilder()
       .select('*')
       .from(this.options.tableName, 'migrations')
       .getRawMany();
   }
+}
+
+function getTableColumnForSeeder(Seeder: SeederConstructor): Omit<MigratorTableColumn, 'id'> {
+  return { seeder: Seeder.name, updated: Date.now() };
 }
 
 function getIntegerColumnType(connection: Connection): 'integer' | 'int' {
