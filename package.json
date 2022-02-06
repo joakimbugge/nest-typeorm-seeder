@@ -30,7 +30,7 @@
     "start:module:debug": "nest start --config nest-cli.module.json --path tsconfig.json --debug --watch",
     "lint": "eslint .",
     "lint:types": "tsc --noEmit",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
