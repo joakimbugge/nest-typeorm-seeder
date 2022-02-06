@@ -7,6 +7,9 @@
     <a href='https://www.npmjs.com/package/@airhead/nest-typeorm-seeder'>
         <img src='https://img.shields.io/github/v/release/joakimbugge/nest-typeorm-seeder?include_prereleases' alt='Latest release' />
     </a>
+    <a href='https://coveralls.io/github/joakimbugge/nest-typeorm-seeder?branch=main'>
+        <img alt="Test coverage" src="https://img.shields.io/coveralls/github/joakimbugge/nest-typeorm-seeder">
+    </a>
     <a href='https://github.com/joakimbugge/nest-typeorm-seeder/blob/main/LICENSE'>
         <img src='https://img.shields.io/github/license/joakimbugge/nest-typeorm-seeder' alt='License' />
     </a>
