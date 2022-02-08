@@ -27,10 +27,12 @@
 
 ## Introduction
 
-Seed the database in your Nest application automatically.
+Seed your Nest + TypeORM application database using decorators. Add the module to your application for automatic seeding
+on startup or use the standalone version if being more hands-on is your thing.
 
-Be aware that this package is only the Nest integration. To learn about seeding with TypeORM, check
-out [@airhead/typeorm-seeder](https://github.com/joakimbugge/typeorm-seeder).
+To learn about seeding with TypeORM, check out [@airhead/typeorm-seeder](https://github.com/joakimbugge/typeorm-seeder).
+
+This tool is in early stages and in active development, breaking changes may occur between minor versions.
 
 ## Installation
 
@@ -60,7 +62,8 @@ import { TypeOrmSeederModule } from '@airhead/nest-typeorm-seeder';
     }),
   ],
 })
-export class AppModule {}
+export class AppModule {
+}
 ```
 
 ### Standalone
