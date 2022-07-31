@@ -1,28 +1,28 @@
-import { Connection, createConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Migrator, MigratorTableColumn } from '../src/Migrator';
 import { PostSeederMock } from './seeders/PostSeederMock';
 import { UserSeederMock } from './seeders/UserSeedMock';
 import { getInMemoryDatabaseOptions } from './utils/database';
 
 describe(Migrator.name, () => {
-  let connection: Connection;
+  let dataSource: DataSource;
 
   beforeEach(async () => {
-    connection = await createConnection(getInMemoryDatabaseOptions([]));
+    dataSource = await new DataSource(getInMemoryDatabaseOptions([])).initialize();
   });
 
   afterEach(() => {
     jest.useRealTimers();
-    connection.close();
+    dataSource.destroy();
   });
 
   describe(Migrator.prototype.start, () => {
     it('creates database table', async () => {
-      const migrator = new Migrator(connection);
+      const migrator = new Migrator(dataSource);
       await migrator.start();
 
       const query = 'SELECT * FROM nest_typeorm_seeder';
-      const result = await connection.query(query);
+      const result = await dataSource.query(query);
 
       expect(result).toEqual([]);
 
@@ -30,11 +30,11 @@ describe(Migrator.name, () => {
     });
 
     it('uses provided table name', async () => {
-      const migrator = new Migrator(connection, { tableName: 'foo' });
+      const migrator = new Migrator(dataSource, { tableName: 'foo' });
       await migrator.start();
 
       const query = 'SELECT * FROM foo';
-      const result = await connection.query(query);
+      const result = await dataSource.query(query);
 
       expect(result).toEqual([]);
 
@@ -44,13 +44,13 @@ describe(Migrator.name, () => {
 
   describe(Migrator.prototype.upsert, () => {
     it('inserts new migration', async () => {
-      const migrator = new Migrator(connection);
+      const migrator = new Migrator(dataSource);
       await migrator.start();
 
       await migrator.upsert(UserSeederMock);
 
       const query = 'SELECT * FROM nest_typeorm_seeder';
-      const [result]: MigratorTableColumn[] = await connection.query(query);
+      const [result]: MigratorTableColumn[] = await dataSource.query(query);
 
       expect(result).toEqual<MigratorTableColumn>({
         id: 1,
@@ -67,17 +67,17 @@ describe(Migrator.name, () => {
       const DURATION = 1000;
       const QUERY = 'SELECT * FROM nest_typeorm_seeder';
 
-      const migrator = new Migrator(connection);
+      const migrator = new Migrator(dataSource);
       await migrator.start();
 
       // Insert for the first time
       await migrator.upsert(UserSeederMock);
-      const [inserted]: MigratorTableColumn[] = await connection.query(QUERY);
+      const [inserted]: MigratorTableColumn[] = await dataSource.query(QUERY);
 
       // Update later
       jest.advanceTimersByTime(DURATION);
       await migrator.upsert(UserSeederMock);
-      const [updated]: MigratorTableColumn[] = await connection.query(QUERY);
+      const [updated]: MigratorTableColumn[] = await dataSource.query(QUERY);
 
       expect(updated).toEqual({
         id: 1,
@@ -91,7 +91,7 @@ describe(Migrator.name, () => {
 
   describe(Migrator.prototype.filter, () => {
     it('returns empty on start', async () => {
-      const migrator = new Migrator(connection);
+      const migrator = new Migrator(dataSource);
       await migrator.start();
 
       const seeders = await migrator.filter([UserSeederMock]);
@@ -100,7 +100,7 @@ describe(Migrator.name, () => {
     });
 
     it('removed migrated seeders', async () => {
-      const migrator = new Migrator(connection);
+      const migrator = new Migrator(dataSource);
       await migrator.start();
       await migrator.upsert(UserSeederMock);
 

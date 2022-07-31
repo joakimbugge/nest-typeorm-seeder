@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { merge } from 'lodash';
-import { Connection, getConnectionManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Migrator, MigratorOptions } from './Migrator';
 
 export interface TypeOrmSeederModuleOptions extends ModuleMetadata {
@@ -22,19 +22,18 @@ export interface TypeOrmSeederModuleOptions extends ModuleMetadata {
   connectionName?: string;
 }
 
-const SEEDER_OPTIONS = 'SEEDERS_OPTIONS';
+const SEEDERS_OPTIONS = 'SEEDERS_OPTIONS';
 
 @Module({})
 export class TypeOrmSeederModule implements OnModuleInit {
-  private readonly connection: Connection;
   private readonly migrator: Migrator;
 
   constructor(
-    @Inject(SEEDER_OPTIONS) private readonly options: Required<TypeOrmSeederModuleOptions>,
+    @Inject(SEEDERS_OPTIONS) private readonly options: Required<TypeOrmSeederModuleOptions>,
     private readonly moduleRef: ModuleRef,
+    private readonly dataSource: DataSource,
   ) {
-    this.connection = getConnectionManager().get(options.connectionName);
-    this.migrator = new Migrator(this.connection, this.options.migrator);
+    this.migrator = new Migrator(this.dataSource, this.options.migrator);
   }
 
   public static forRoot(options: TypeOrmSeederModuleOptions): DynamicModule {
@@ -54,7 +53,7 @@ export class TypeOrmSeederModule implements OnModuleInit {
       exports: opts.exports,
       providers: [
         {
-          provide: SEEDER_OPTIONS,
+          provide: SEEDERS_OPTIONS,
           useValue: opts,
         },
         ...opts.seeders,
