@@ -38,16 +38,16 @@
     "prepare": "is-ci || husky install"
   },
   "peerDependencies": {
-    "@nestjs/common": "^9.x",
-    "@nestjs/core": "^9.x",
-    "@nestjs/typeorm": "^9.x"
+    "@nestjs/common": "^9",
+    "@nestjs/core": "^9",
+    "@nestjs/typeorm": "^9",
+    "typeorm": "^0.3.2"
   },
   "dependencies": {
-    "@airhead/typeorm-seeder": "^1.1.1",
+    "@airhead/typeorm-seeder": "^1.3.0",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
-    "tslib": "^2.3.1",
-    "typeorm": "^0.3.7"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
@@ -91,6 +91,7 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "^4.0.0",
+    "typeorm": "^0.3.7",
     "typescript": "^4.3.5"
   },
   "lint-staged": {
