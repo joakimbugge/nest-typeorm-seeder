@@ -1,7 +1,7 @@
 import { SeederConstructor } from '@airhead/typeorm-seeder';
 import { merge } from 'lodash';
 import {
-  Connection,
+  DataSource,
   InsertResult,
   QueryRunner,
   Table,
@@ -24,8 +24,8 @@ export class Migrator {
   private readonly options: Required<MigratorOptions>;
   private readonly queryRunner: QueryRunner;
 
-  constructor(private readonly connection: Connection, options?: MigratorOptions) {
-    this.queryRunner = this.connection.createQueryRunner();
+  constructor(private readonly dataSource: DataSource, options?: MigratorOptions) {
+    this.queryRunner = this.dataSource.createQueryRunner();
 
     this.options = merge<Required<MigratorOptions>, MigratorOptions>(
       { tableName: 'nest_typeorm_seeder' },
@@ -36,7 +36,7 @@ export class Migrator {
   public async start(): Promise<void> {
     const table = new Table({
       name: this.options.tableName,
-      columns: getTableColumns(this.connection),
+      columns: getTableColumns(this.dataSource),
     });
 
     await this.queryRunner.createTable(table, true);
@@ -48,7 +48,7 @@ export class Migrator {
 
   public async upsert(Seeder: SeederConstructor): Promise<InsertResult | UpdateResult> {
     if (await this.get(Seeder)) {
-      return this.connection
+      return this.dataSource
         .createQueryBuilder()
         .update(this.options.tableName)
         .set(getTableColumnForSeeder(Seeder))
@@ -67,7 +67,7 @@ export class Migrator {
   }
 
   private insert(Seeder: SeederConstructor): Promise<InsertResult> {
-    return this.connection
+    return this.dataSource
       .createQueryBuilder()
       .insert()
       .into(this.options.tableName)
@@ -76,7 +76,7 @@ export class Migrator {
   }
 
   private async get(Seeder: SeederConstructor): Promise<MigratorTableColumn | undefined> {
-    return this.connection
+    return this.dataSource
       .createQueryBuilder()
       .select('*')
       .from(this.options.tableName, 'migrations')
@@ -85,7 +85,7 @@ export class Migrator {
   }
 
   private getAll(): Promise<MigratorTableColumn[]> {
-    return this.connection
+    return this.dataSource
       .createQueryBuilder()
       .select('*')
       .from(this.options.tableName, 'migrations')
@@ -97,14 +97,14 @@ function getTableColumnForSeeder(Seeder: SeederConstructor): Omit<MigratorTableC
   return { seeder: Seeder.name, updated: Date.now() };
 }
 
-function getIntegerColumnType(connection: Connection): 'integer' | 'int' {
-  return connection.driver instanceof AbstractSqliteDriver ? 'integer' : 'int';
+function getIntegerColumnType(dataSource: DataSource): 'integer' | 'int' {
+  return dataSource.driver instanceof AbstractSqliteDriver ? 'integer' : 'int';
 }
 
-function getTableColumns(connection: Connection): TableColumnOptions[] {
+function getTableColumns(dataSource: DataSource): TableColumnOptions[] {
   const idColumn: TableColumnOptions = {
     name: 'id',
-    type: getIntegerColumnType(connection),
+    type: getIntegerColumnType(dataSource),
     isPrimary: true,
     generationStrategy: 'increment',
   };
